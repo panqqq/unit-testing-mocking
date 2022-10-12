@@ -3,22 +3,14 @@ package com.endava.internship.mocking.service;
 import com.endava.internship.mocking.model.Payment;
 import com.endava.internship.mocking.model.Status;
 import com.endava.internship.mocking.model.User;
-import com.endava.internship.mocking.repository.InMemPaymentRepository;
-import com.endava.internship.mocking.repository.InMemUserRepository;
 import com.endava.internship.mocking.repository.PaymentRepository;
 import com.endava.internship.mocking.repository.UserRepository;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -29,6 +21,11 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+
 
 @ExtendWith(MockitoExtension.class)
 class PaymentServiceTest {
@@ -38,22 +35,16 @@ class PaymentServiceTest {
     private UserRepository userRepository;
     @Mock
     private PaymentRepository paymentRepository;
+    @InjectMocks
     private PaymentService paymentService;
 
-    @BeforeEach
-    void setUp() {
-        basicValidationService = Mockito.mock(BasicValidationService.class);
-        userRepository = Mockito.mock(InMemUserRepository.class);
-        paymentRepository = Mockito.mock(InMemPaymentRepository.class);
-        paymentService = new PaymentService(userRepository,paymentRepository,basicValidationService);
-    }
     @AfterEach
     void tearDown() {
         Mockito.verifyNoMoreInteractions(basicValidationService);
         Mockito.verifyNoMoreInteractions(userRepository);
         Mockito.verifyNoMoreInteractions(paymentRepository);
-
     }
+
     @Test
     void createPayment_whenUserNotExists_ShouldThrowNoSuchElementException() {
         final Integer userId = 7;
@@ -66,8 +57,8 @@ class PaymentServiceTest {
         Mockito.verify(userRepository).findById(userId);
         Mockito.verify(basicValidationService).validateUserId(userId);
         Mockito.verifyNoInteractions(paymentRepository);
-
     }
+
     @Test
     void createPayment() {
         final ArgumentCaptor<Payment> capturedPayment = ArgumentCaptor.forClass(Payment.class);
@@ -96,7 +87,6 @@ class PaymentServiceTest {
         Mockito.verify(basicValidationService).validateAmount(amount);
         Mockito.verify(userRepository).findById(userId);
         Mockito.verify(basicValidationService).validateUser(user);
-
     }
 
     @Test
@@ -104,36 +94,32 @@ class PaymentServiceTest {
         final UUID uid = UUID.randomUUID();
         final String message = "New Message for uuid: " + uid;
 
-        final Payment p2 = new Payment(1,500d, message);
+        final Payment p2 = new Payment(1, 500d, message);
 
-        Mockito.when(paymentRepository.editMessage(any(UUID.class),anyString())).thenReturn(p2);
+        Mockito.when(paymentRepository.editMessage(any(UUID.class), anyString())).thenReturn(p2);
 
-        assertThat(p2).isEqualTo(paymentService.editPaymentMessage(uid,message));
+        assertThat(p2).isEqualTo(paymentService.editPaymentMessage(uid, message));
 
         Mockito.verify(basicValidationService).validatePaymentId(uid);
         Mockito.verify(basicValidationService).validateMessage(message);
-        Mockito.verify(paymentRepository).editMessage(uid,message);
+        Mockito.verify(paymentRepository).editMessage(uid, message);
         Mockito.verifyNoInteractions(userRepository);
-
     }
-
-
 
     @Test
     void getAllByAmountExceeding() {
         final Payment p1 = new Payment(1, 100d, "message 1");
         final Payment p2 = new Payment(2, 200d, "message 2");
         final Payment p3 = new Payment(3, 300d, "message 3");
-        List<Payment> paymentsList = Arrays.asList(p1,p2,p3);
+        List<Payment> paymentsList = Arrays.asList(p1, p2, p3);
 
         Mockito.when(paymentRepository.findAll()).thenReturn(paymentsList);
 
         final List<Payment> list = paymentService.getAllByAmountExceeding(150d);
 
-        assertThat(list).containsAll(Arrays.asList(p2,p3));
+        assertThat(list).containsAll(Arrays.asList(p2, p3));
 
         Mockito.verify(paymentRepository).findAll();
         Mockito.verifyNoInteractions(basicValidationService);
     }
-
 }

@@ -22,9 +22,9 @@ class InMemPaymentRepositoryTest {
     @BeforeEach
     void setUp() {
         inMemPaymentRepository = new InMemPaymentRepository();
-        p1 = new Payment(1,100d,"message1");
-        p2 = new Payment(2,200d,"message2");
-        p3 = new Payment(3,300d,"message3");
+        p1 = new Payment(1, 100d, "message1");
+        p2 = new Payment(2, 200d, "message2");
+        p3 = new Payment(3, 300d, "message3");
         inMemPaymentRepository.save(p1);
         inMemPaymentRepository.save(p2);
         inMemPaymentRepository.save(p3);
@@ -43,7 +43,7 @@ class InMemPaymentRepositoryTest {
 
     @Test
     void findAll() {
-        final List<Payment> list = Arrays.asList(p1,p2,p3);
+        final List<Payment> list = Arrays.asList(p1, p2, p3);
         assertThat(inMemPaymentRepository.findAll()).containsAll(list);
     }
 

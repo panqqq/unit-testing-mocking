@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class BasicValidationServiceTest {
-
     private BasicValidationService validationService;
 
     @BeforeEach
@@ -21,6 +20,7 @@ class BasicValidationServiceTest {
     void validateAmount_whenParameterIsNull_ShouldThrowIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class, () -> validationService.validateAmount(null));
     }
+
     @Test
     void validateAmount_whenParameterIsLessOrEqualToZero_ShouldThrowIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class, () -> validationService.validateAmount(0d));
