@@ -4,14 +4,13 @@ import com.endava.internship.mocking.model.Status;
 import com.endava.internship.mocking.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 class BasicValidationServiceTest {
 
-    BasicValidationService validationService;
+    private BasicValidationService validationService;
 
     @BeforeEach
     void setUp() {
@@ -39,8 +38,7 @@ class BasicValidationServiceTest {
 
     @Test
     void validateUser_whenUserStatusIsNotActive_ShouldThrowIllegalArgumentException() {
-        User user = Mockito.mock(User.class);
-        when(user.getStatus()).thenReturn(Status.INACTIVE);
+        final User user = new User(50, "John", Status.INACTIVE);
         assertThrows(IllegalArgumentException.class, () -> validationService.validateUser(user));
     }
 

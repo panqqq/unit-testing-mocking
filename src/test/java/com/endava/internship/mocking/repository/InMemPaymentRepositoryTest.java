@@ -4,16 +4,20 @@ import com.endava.internship.mocking.model.Payment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class InMemPaymentRepositoryTest {
-    InMemPaymentRepository inMemPaymentRepository;
-    Payment p1;
-    Payment p2;
-    Payment p3;
+    private InMemPaymentRepository inMemPaymentRepository;
+    private Payment p1;
+    private Payment p2;
+    private Payment p3;
 
     @BeforeEach
     void setUp() {
@@ -33,13 +37,13 @@ class InMemPaymentRepositoryTest {
 
     @Test
     void findById() {
-        Optional<Payment> expected = inMemPaymentRepository.findById(p1.getPaymentId());
+        final Optional<Payment> expected = inMemPaymentRepository.findById(p1.getPaymentId());
         assertThat(Optional.of(p1)).isEqualTo(expected);
     }
 
     @Test
     void findAll() {
-        List<Payment> list = Arrays.asList(p1,p2,p3);
+        final List<Payment> list = Arrays.asList(p1,p2,p3);
         assertThat(inMemPaymentRepository.findAll()).containsAll(list);
     }
 
@@ -55,8 +59,8 @@ class InMemPaymentRepositoryTest {
 
     @Test
     void save() {
-        Payment p4 = new Payment(4, 400d, "message4");
-        Payment expected = inMemPaymentRepository.save(p4);
+        final Payment p4 = new Payment(4, 400d, "message4");
+        final Payment expected = inMemPaymentRepository.save(p4);
         assertThat(p4).isEqualTo(expected);
     }
 
@@ -67,7 +71,7 @@ class InMemPaymentRepositoryTest {
 
     @Test
     void editMessage() {
-        Payment expected = inMemPaymentRepository.editMessage(p1.getPaymentId(), "New Message for Payment ID 1");
+        final Payment expected = inMemPaymentRepository.editMessage(p1.getPaymentId(), "New Message for Payment ID 1");
         assertThat(p1).isEqualTo(expected);
     }
 }
